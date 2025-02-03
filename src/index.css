@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('assets/Gilroy-SemiBold.woff')
+   format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Gilroy', sans-serif;
+}
+
+
+::selection {
+  background-color: #1f3438;  /* Change this to the background color you want */
+  color: rgb(0, 243, 211);               /* Text color when selected */
+}
