@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://siddhantv1.github.io/DocsMini/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
