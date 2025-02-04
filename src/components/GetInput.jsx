@@ -34,9 +34,12 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
         />
         <h2 className="text-xl text-cyan-100 font-bold mb-4">{initialText ? 'Edit Card' : 'Add New Card'}</h2>
         <form onSubmit={handleSubmit}>
+
+        {/* count characters */}
         <p className="text-sm text-gray-400 py-0">
                 {desc.length}/90 characters
             </p>
+            {/* get input text */}
           <textarea
             rows={5}
             placeholder='Write something...'
@@ -46,6 +49,7 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
             required
             maxLength={"90"}
           />
+          {/* input tag */}
           <input
             type="text"
             placeholder="Tag (optional)"
