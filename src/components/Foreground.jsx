@@ -7,16 +7,33 @@ import GetInput from './GetInput';
 
 function Foreground() {
   const ref = useRef(null);
+  const parseLists = (text) => {
+    const lines = text.split('\n');
+    return lines.map(line => {
+      // Check for bullet points
+      if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+        return { type: 'bullet', content: line.trim().slice(2) };
+      }
+      // Check for numbered items
+      const match = line.match(/^(\d+)\.\s+(.*)$/);
+      if (match) {
+        return { type: 'numbered', content: match[2], number: parseInt(match[1]) };
+      }
+      return { type: 'text', content: line };
+    });
+  };
 
   const [selectedCardIndices, setSelectedCardIndices] = useState([]);
   const [cardsData, setCardsData] = useState([
     {
       desc: "Create cards using the ➕ button, select one by clicking it. Edit using the pencil button.",
+      lists: parseLists("Create cards using the ➕ button, select one by clicking it. Edit using the pencil button."),
       tags: ["creation"],
       close: false,
     },
     {
       desc: "Dynamically arrange cards anywhere on the screen, Download them as txt files.",
+      lists: parseLists("Dynamically arrange cards anywhere on the screen, Download them as txt files."),
       tags: ["use tags"],
       close: false,
     }
@@ -39,6 +56,7 @@ function Foreground() {
       if (editingCardIndex === null) {
         newCardData = {
           desc: newDesc,
+          lists: parseLists(newDesc),
           tags: newTag ? [newTag] : [],
           close: false,
         };
@@ -46,6 +64,7 @@ function Foreground() {
       } else {
         newCardData = cardsData[editingCardIndex];
         newCardData.desc = newDesc;
+        newCardData.lists = parseLists(newDesc);
         newCardData.tags = newTag ? [newTag] : [];
         setCardsData(prev => prev.map((item, index) => 
           index === editingCardIndex ? newCardData : item
@@ -86,8 +105,7 @@ function Foreground() {
   };
 
   const handleConfirmDelete = () => {
-    const updatedCardsData = cardsData.filter((_, index) => !selectedCardIndices.includes(index));
-    setCardsData(updatedCardsData);
+    setCardsData(prev => prev.filter((_, index) => !selectedCardIndices.includes(index)));
     setSelectedCardIndices([]);
     setShowConfirmation(false);
   };
