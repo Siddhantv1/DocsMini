@@ -13,15 +13,20 @@
 5. **Responsive Design**: Fast and Smooth Design.
 
 ### Tech Stack used
-**Frontend**: JavaScript, Vite + React
+**Frontend**: JavaScript, Vite + React, Tailwind CSS
 
 ### Installation
-1. Clone this repository:
-```bash
+1. Clone this repository and navigate into folder:
+```sh
 git clone https://github.com/Siddhantv1/DocsMini.git
-```
-
-2. Navigate into project repository:
-```bash
 cd DocsMini
 ```
+2. Install necessary dependencies
+```sh
+npm install
+```
+3. Run local server
+```sh
+npm run dev
+```
+
