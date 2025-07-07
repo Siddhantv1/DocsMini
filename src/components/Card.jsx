@@ -38,8 +38,9 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
   // };
 
   return (
-    <div onClick={() => !isEditing && toggleCardSelection(index)} className="card-class">
+    <div className="card-class">
       <motion.div 
+        onClick={() => !isEditing && toggleCardSelection(index)}
         drag 
         dragConstraints={reference} 
         whileDrag={{scale: 1.1}} 
@@ -116,7 +117,7 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
               <span key={idx} className='bg-emerald-800 px-2 py-1 rounded-full text-sm'>{tag}</span>
             ))}
           </div>
-          <button onClick={onEdit} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
+          <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
             <RiEditLine size={'1em'}/>
           </button>
           <button onClick={data.close ? null : handleDownload} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
