@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Card from "./Card";
 import BottomNavBar from './BottomNavBar';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -23,8 +23,7 @@ function Foreground() {
     });
   };
 
-  const [selectedCardIndices, setSelectedCardIndices] = useState([]);
-  const [cardsData, setCardsData] = useState([
+  const initialCards = [
     {
       desc: "Create cards using the ➕ button, select one by clicking it. Edit using the pencil button.",
       lists: parseLists("Create cards using the ➕ button, select one by clicking it. Edit using the pencil button."),
@@ -37,13 +36,23 @@ function Foreground() {
       tags: ["use tags"],
       close: false,
     }
-  ]);
+  ];
+
+  const [selectedCardIndices, setSelectedCardIndices] = useState([]);
+  const [cardsData, setCardsData] = useState(() => {
+    const savedCards = localStorage.getItem('cards');
+    return savedCards ? JSON.parse(savedCards) : initialCards;
+  });
 
   const [showInput, setShowInput] = useState(false);
   const [editingCardIndex, setEditingCardIndex] = useState(null);
   //const [newCardText, setNewCardText] = useState('');
   //const [newCardTags, setNewCardTags] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('cards', JSON.stringify(cardsData));
+  }, [cardsData]);
 
   const addCard = () => {
       setShowInput(true);
