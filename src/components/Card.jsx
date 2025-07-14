@@ -15,6 +15,55 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
   //   toggleCardSelection(index);
   // };
 
+  //different tag colors
+  const stringToColor = (str) => {
+    //base case
+    if (str == "later"){
+      return {backgroundColor: "green"};
+    }
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash % 360);
+    const saturation = 80;
+    const lightness = 60;
+
+    const hsl = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
+    //we would OBVIOUSLY need to convert text to balck incase the bg is too bright, hence
+    // we'll use something called perceived luminance to calculate brightness
+
+    // so for that first we convert the given HSL to RGB
+
+
+    const l = lightness / 100;
+    const s = saturation / 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+    const m = l - c / 2;
+
+    let r = 0, g = 0, b = 0;
+    if (hue < 60) [r, g, b] = [c, x, 0];
+    else if (hue < 120) [r, g, b] = [x, c, 0];
+    else if (hue < 180) [r, g, b] = [0, c, x];
+    else if (hue < 240) [r, g, b] = [0, x, c];
+    else if (hue < 300) [r, g, b] = [x, 0, c];
+    else [r, g, b] = [c, 0, x];
+
+    const [R, G, B] = [r + m, g + m, b + m].map(v => Math.round(v * 255));
+
+    //calculate using formlua
+    const luminance = (0.299 * R + 0.587 * G + 0.114 * B);
+    const textColor = luminance > 150 ? '#000' : '#fff';
+
+    return {
+      backgroundColor: hsl,
+      color: textColor
+    };
+  };
+
+
   
   // Function to handle download
   const handleDownload = (e) => {
@@ -114,7 +163,8 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
         <div className='flex items-center justify-between py-3 px-8 mb-5'>
           <div className='flex space-x-2'>
             {data.tags.map((tag, idx) =>(
-              <span key={idx} className='bg-emerald-800 px-2 py-1 rounded-full text-sm'>{tag}</span>
+              <span key={idx} className='px-2 py-1 rounded-full text-sm'
+              style={ stringToColor(tag)}>{tag}</span>
             ))}
           </div>
           <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
