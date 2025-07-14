@@ -70,7 +70,7 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
         )} */}
 
         <FaRegFileAlt/>
-        <div className='font-semibold leading-right mt-1'>
+        <div className='font-regular leading-right mt-1'>
         {data.lists?.map((listItem, idx) => {
           switch(listItem.type) {
             case 'bullet':
