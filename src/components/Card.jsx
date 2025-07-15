@@ -119,7 +119,16 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
         )} */}
 
         <FaRegFileAlt/>
-        <div className='font-regular leading-right mt-1'>
+        <div 
+          className='font-regular leading-right mt-1 card-content-scroll'
+          style={{
+            maxHeight: '120px', // Limit content height
+            overflowY: 'hidden',
+            transition: 'overflow 0.5s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.overflowY = 'auto'}
+          onMouseLeave={e => e.currentTarget.style.overflowY = 'hidden'}
+        >
         {data.lists?.map((listItem, idx) => {
           switch(listItem.type) {
             case 'bullet':
