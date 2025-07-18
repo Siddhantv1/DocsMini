@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { FaRegFileAlt } from "react-icons/fa";
+import { FaRegFileAlt, FaRegCheckCircle } from "react-icons/fa";
 import { MdOutlineFileDownload } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
+// Removed unused import
 import { motion } from "framer-motion";
-import { RiEditLine } from "react-icons/ri";
+import { RiEditLine} from "react-icons/ri";
 function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit }) {
   // const [isDragging, setIsDragging] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing] = useState(false);
 
   // const handleBlur = () => {
   //   setIsEditing(false);
@@ -89,21 +89,21 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
   return (
     <div className="card-class">
       <motion.div 
-        onClick={() => !isEditing && toggleCardSelection(index)}
         drag 
         dragConstraints={reference} 
-        whileDrag={{scale: 1.1}} 
-        className={`relative min-w-[300px] max-w-[400px] min-h-60 max-h-[90vh] rounded-[50px] bg-zinc-900/90 text-white px-8 py-8 overflow-auto ${
+        whileDrag={{scale: 1.05}}
+        whileTap={{scale: 1.02}}
+        className={`relative min-w-[300px] max-w-[400px] min-h-60 max-h-[90vh] rounded-[50px] bg-zinc-900/90 text-white px-6 py-6 overflow-auto ${
           isSelected ? 'border-2 border-sky-300' : ''
         }`}
         layout
-         transition={{ type: 'inertia', stiffness: 300, damping: 30 }}
-         onDragStart={(event, info) => {
+         transition={{ type: 'inertia', stiffness: 400, damping: 30 }}
+         onDragStart={(event) => {
           event.preventDefault();
           event.stopPropagation();
         }}
            // Prevents inertia-based unwanted shifts
-          dragElastic={0.9}
+          dragElastic={0.2}
       >
       {/* Cancel Button
       {isSelected && (
@@ -118,7 +118,15 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
           </button>
         )} */}
 
-        <FaRegFileAlt/>
+        <button 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              !isEditing && toggleCardSelection(index);
+            }} 
+            className={`w-5 h-5 ${isSelected ? 'bg-sky-500' : 'bg-transparent border-2 border-sky-500'} rounded-full flex items-center justify-center transition-colors`}
+          >
+            {isSelected ? <FaRegCheckCircle size={'1em'}/> : null}
+          </button>
         <div 
           className='font-regular leading-right mt-1 card-content-scroll'
           style={{
@@ -153,6 +161,32 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
                   <span>{listItem.number}. {listItem.content}</span>
                 </motion.div>
               );
+            case 'checkbox':
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <span 
+                    className="cursor-pointer select-none" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const newLists = [...data.lists];
+                      newLists[idx] = { ...listItem, checked: !listItem.checked };
+                      // Update the lists without toggling card selection
+                      toggleCardSelection(index, data.desc, newLists, true);
+                    }}
+                  >
+                    {listItem.checked ? "✅" : "🔳"}{' '}
+                    <span className={listItem.checked ? 'line-through opacity-50' : ''}>
+                      {listItem.content}
+                    </span>
+                  </span>
+                </motion.div>
+              );
             default:
               return (
                 <motion.div
@@ -176,11 +210,18 @@ function Card({ data, toggleCardSelection, index, isSelected, reference, onEdit 
               style={ stringToColor(tag)}>{tag}</span>
             ))}
           </div>
-          <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
+          <button 
+            onClick={(e) => { e.stopPropagation(); onEdit(); }} 
+            className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'
+          >
             <RiEditLine size={'1em'}/>
           </button>
-          <button onClick={data.close ? null : handleDownload} className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'>
-            {data.close ? <IoClose/> : <MdOutlineFileDownload size={'1em'}/>}
+
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleDownload(e); }} 
+            className='w-7 h-7 bg-sky-500 rounded-full flex items-center justify-center'
+          >
+            <MdOutlineFileDownload size={'1em'}/>
           </button>
         </div>
       </div>
@@ -192,9 +233,10 @@ Card.propTypes = {
   data: PropTypes.shape({
     desc: PropTypes.string.isRequired,
     lists: PropTypes.arrayOf(PropTypes.shape({
-      type: PropTypes.oneOf(['text', 'bullet', 'numbered']),
+      type: PropTypes.oneOf(['text', 'bullet', 'numbered', 'checkbox']),
       content: PropTypes.string.isRequired,
-      number: PropTypes.number // optional for numbered items
+      number: PropTypes.number, // optional for numbered items
+      checked: PropTypes.bool   // optional for checkbox items
     })),
      tags: PropTypes.arrayOf(PropTypes.string),
     close: PropTypes.bool.isRequired,
