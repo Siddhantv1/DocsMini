@@ -37,7 +37,7 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
 
         {/* count characters */}
         <p className="text-sm text-gray-400 py-0">
-                {desc.length}/90 characters
+                {desc.length}/100 characters
             </p>
             {/* get input text */}
           <textarea
@@ -47,7 +47,7 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             required
-            maxLength={"90"}
+            maxLength={"100"}
           />
           {/* input tag */}
           <input
