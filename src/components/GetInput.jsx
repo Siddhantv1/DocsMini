@@ -43,7 +43,7 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
           <textarea
             rows={5}
             placeholder='Write something...'
-            className="w-full border bg-stone-800 text-white border-gray-900 rounded-xl p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-400 resize-none"
+            className="w-full border card-content-scroll bg-stone-800 text-white border-gray-900 rounded-xl p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-400 resize-none"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             required
@@ -56,6 +56,7 @@ const GetInput = ({ onClose, onSubmit, initialText, initialTag }) => {
             className="w-full border bg-stone-800 text-white border-gray-900 rounded-xl p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-400"
             value={tag}
             onChange={(e) => setTag(e.target.value)}
+            maxLength={"16"}
           />
           <button
             type="submit"
