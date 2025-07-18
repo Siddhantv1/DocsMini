@@ -10,6 +10,15 @@ function Foreground() {
   const parseLists = (text) => {
     const lines = text.split('\n');
     return lines.map(line => {
+      // Check for checkboxes
+      const checkboxMatch = line.trim().match(/^-\s*\[([ x])\]\s*(.+)$/);
+      if (checkboxMatch) {
+        return { 
+          type: 'checkbox', 
+          content: checkboxMatch[2],
+          checked: checkboxMatch[1] === 'x'
+        };
+      }
       // Check for bullet points
       if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
         return { type: 'bullet', content: line.trim().slice(2) };
@@ -93,16 +102,24 @@ function Foreground() {
   //   setNewCardText('');
   // };
 
-  const toggleCardSelection = (index, newDesc = null) => {
-    if (selectedCardIndices.includes(index)) {
-      setSelectedCardIndices(prev => prev.filter(i => i !== index));
-    } else {
-      setSelectedCardIndices(prev => [...prev, index]);
+  const toggleCardSelection = (index, newDesc = null, newLists = null, isCheckboxUpdate = false) => {
+    // Only toggle selection if it's not a checkbox update
+    if (!isCheckboxUpdate) {
+      if (selectedCardIndices.includes(index)) {
+        setSelectedCardIndices(prev => prev.filter(i => i !== index));
+      } else {
+        setSelectedCardIndices(prev => [...prev, index]);
+      }
     }
 
-    if (newDesc){
+    // Update card data if needed
+    if (newDesc || newLists) {
       setCardsData(prev => prev.map((item, idx) =>
-      idx === index ? { ...item, desc:newDesc} : item
+        idx === index ? { 
+          ...item, 
+          desc: newDesc || item.desc,
+          lists: newLists || item.lists
+        } : item
       ));
     }
   };
